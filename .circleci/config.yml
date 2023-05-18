@@ -1,6 +1,6 @@
 version: 2.1
 jobs:
-  # running commands on a basic image
+
   Hello-World:
     docker:
       - image: cimg/base:2021.04
