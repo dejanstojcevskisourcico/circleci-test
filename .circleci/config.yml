@@ -21,6 +21,7 @@ jobs:
           command: |
             ls -al
             echo '^^^Your repo files^^^'
+            which python3
   # running a node container
   Using-Node:
     docker:
