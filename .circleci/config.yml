@@ -26,20 +26,12 @@ jobs:
   Using-Node:
     docker:
       - image: cimg/node:17.2
-    environment:
-      DEJAN_NAME: 'Dejan'
-      DEJAN_SURNAME: 'Stojcevski'
     steps:
       - run:
           name: Running the Node Container
           command: |
             node -v
             which python3
-      - run:
-          name: Print Env Variable from previous step
-          command: |
-            echo $DEJAN_NAME
-            echo $DEJAN_SURNAME
   Now-Complete:
     docker:
       - image: alpine:3.15
