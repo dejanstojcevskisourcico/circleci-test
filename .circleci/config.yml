@@ -27,8 +27,8 @@ jobs:
     docker:
       - image: cimg/node:17.2
     environment:
-      DEJAN_NAME='Dejan'
-      DEJAN_SURNAME='Stojcevski'
+      DEJAN_NAME: 'Dejan'
+      DEJAN_SURNAME: 'Stojcevski'
     steps:
       - run:
           name: Running the Node Container
