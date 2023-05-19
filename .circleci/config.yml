@@ -36,10 +36,12 @@ jobs:
           name: Setting Env Variable
           command: |
             echo 'export DEJAN_NAME="Dejan"' >> "$BASH_ENV"
+            echo 'export DEJAN_SURNAME="Stojcevski"' >> "$BASH_ENV"
       - run:
           name: Print Env Variable from previous step
           command: |
             echo $DEJAN_NAME
+            echo $DEJAN_SURNAME
   Now-Complete:
     docker:
       - image: alpine:3.15
