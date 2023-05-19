@@ -26,17 +26,15 @@ jobs:
   Using-Node:
     docker:
       - image: cimg/node:17.2
+    environment:
+      DEJAN_NAME='Dejan'
+      DEJAN_SURNAME='Stojcevski'
     steps:
       - run:
           name: Running the Node Container
           command: |
             node -v
             which python3
-      - run:
-          name: Setting Env Variable
-          command: |
-            echo 'export DEJAN_NAME="Dejan"' >> "$BASH_ENV"
-            echo 'export DEJAN_SURNAME="Stojcevski"' >> "$BASH_ENV"
       - run:
           name: Print Env Variable from previous step
           command: |
