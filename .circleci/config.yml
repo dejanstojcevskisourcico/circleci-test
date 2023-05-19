@@ -32,6 +32,14 @@ jobs:
           command: |
             node -v
             which python3
+      - run:
+          name: Setting Env Variable
+          command: |
+            export DEJAN_NAME='Dejan'
+      - run:
+          name: Print Env Variable for previos job
+          command: |
+            echo $DEJAN_NAME
   Now-Complete:
     docker:
       - image: alpine:3.15
