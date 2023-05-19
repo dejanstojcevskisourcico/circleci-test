@@ -35,10 +35,9 @@ jobs:
       - run:
           name: Setting Env Variable
           command: |
-            export DEJAN_NAME='Dejan'
-            echo $DEJAN_NAME
+            echo 'export DEJAN_NAME="Dejan"' >> "$BASH_ENV"
       - run:
-          name: Print Env Variable from previos job
+          name: Print Env Variable from previous step
           command: |
             echo $DEJAN_NAME
   Now-Complete:
