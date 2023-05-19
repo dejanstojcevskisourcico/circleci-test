@@ -36,8 +36,9 @@ jobs:
           name: Setting Env Variable
           command: |
             export DEJAN_NAME='Dejan'
+            echo $DEJAN_NAME
       - run:
-          name: Print Env Variable for previos job
+          name: Print Env Variable from previos job
           command: |
             echo $DEJAN_NAME
   Now-Complete:
