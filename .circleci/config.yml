@@ -10,7 +10,9 @@ jobs:
   flow:
     executor: my-executor
     steps:
-      - run: mkdir -p workspace
+      - run: 
+          name: "Make workspce directory"
+          command: mkdir -p workspace
       - run: echo "Hello, world!" > workspace/echo-output
 
       # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
