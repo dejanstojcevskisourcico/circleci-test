@@ -1,19 +1,31 @@
 version: 2.1
 
-parameters:
-  run_integration_tests:
-    type: boolean
-    default: false
-
-workflows:
-  integration_tests:
-    when: << pipeline.parameters.run_integration_tests >>
-    jobs:
-      - mytestjob
+commands:
+  provision-k8s:
+    parameters:
+      customer:
+        type: string
+        default: mycompany
+    steps:
+      - run:
+          name: Provision VPC and EKS cluster
+          command: echo << parameters.customer >>
 
 jobs:
-  mytestjob:
+  prep_k8s:
     docker:
-      - image: cimg/node:17.0
+      - image: cimg/node:14.4
+    parameters: # parameters are at the job level
+      customer:
+        type: string
+        default: mycompany
     steps:
-      - checkout
+      - provision-k8s:
+          customer: << parameters.customer >> # you can pass down the parameter value to the step
+
+workflows:
+
+  deploy_k8s_workflow:
+    jobs:
+      - prep_k8s:
+          customer: 'BaringsBank'
