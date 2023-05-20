@@ -1,6 +1,6 @@
 version: 2.1
 
-​jobs:
+jobs:
   print-a-message:
     docker:
       - image: cimg/base:2022.03
@@ -9,7 +9,7 @@ version: 2.1
         type: string
     steps:
       - run: echo << parameters.message >>
-​
+
 workflows:
   my-workflow:
     jobs:
