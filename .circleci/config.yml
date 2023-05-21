@@ -1,37 +1,45 @@
 version: 2.1
 
-parameters:
-  branch:
-    type: string
-    default: << pipeline.git.branch >>
-
-commands:
-  provision-k8s:
-    parameters:
-      branch:
-        type: string
-    steps:
-      - run:
-          name: Echo the passed parameter
-          command: echo << parameters.branch >>
+executors:
+  my-executor:
+    docker:
+      - image: buildpack-deps:jessie
+    working_directory: /tmp
 
 jobs:
-  prep_k8s:
-    docker:
-      - image: cimg/node:14.4
-    parameters: # parameters are at the job level
-      branch:
-        type: string
+  flow:
+    executor: my-executor
     steps:
-      - provision-k8s:
-          branch: << parameters.branch >> # you can pass down the parameter value to the step
+      - run: mkdir -p workspace
+      - run: echo "Hello, world!" > workspace/echo-output
+
+      # Persist the specified paths (workspace/echo-output) into the workspace for use in downstream job.
+      - persist_to_workspace:
+          # Must be an absolute path, or relative path from working_directory. This is a directory on the container which is
+          # taken to be the root directory of the workspace.
+          root: workspace
+          # Must be relative path from root
+          paths:
+            - echo-output
+
+  downstream:
+    executor: my-executor
+    steps:
+      - attach_workspace:
+          # Must be absolute path or relative path from working_directory
+          at: /tmp/workspace
+
+      - run: |
+          if [[ `cat /tmp/workspace/echo-output` == "Hello, world!" ]]; then
+            echo "It worked!";
+          else
+            echo "Nope!"; exit 1
+          fi
 
 workflows:
-
-  deploy_k8s_workflow:
+  btd:
     jobs:
-      - prep_k8s:
-          branch: << pipeline.parameters.branch >>
-          filters:
-            branches:
-              only: /main$/
+      - flow
+      - downstream:
+          requires:
+            - flow
