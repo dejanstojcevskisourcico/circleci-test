@@ -1,31 +1,34 @@
 version: 2.1
 
+parameters:
+  branch:
+    type: string
+    default: << pipeline.git.branch >>
+
 commands:
   provision-k8s:
     parameters:
-      customer:
+      branch:
         type: string
-        default: samplecustomer
     steps:
       - run:
           name: Echo the passed parameter
-          command: echo << parameters.customer >>
+          command: echo << parameters.branch >>
 
 jobs:
   prep_k8s:
     docker:
       - image: cimg/node:14.4
     parameters: # parameters are at the job level
-      customer:
+      branch:
         type: string
-        default: samplecustomer
     steps:
       - provision-k8s:
-          customer: << parameters.customer >> # you can pass down the parameter value to the step
+          branch: << parameters.branch >> # you can pass down the parameter value to the step
 
 workflows:
 
   deploy_k8s_workflow:
     jobs:
       - prep_k8s:
-          customer: 'Dejan Stojcevski'
+          branch: << pipeline.parameters.branch >>
