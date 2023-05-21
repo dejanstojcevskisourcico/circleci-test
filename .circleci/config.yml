@@ -34,4 +34,4 @@ workflows:
           branch: << pipeline.parameters.branch >>
           filters:
             branches:
-              only: /<<pipeline.parameters.branch>>$/
+              only: /main$/
