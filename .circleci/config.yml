@@ -1,19 +1,13 @@
 version: 2.1
-
 jobs:
-  my-job:
+  build:
     docker:
-      - image: cimg/base:stable
+      - image: cimg/aws:2022.06.1
     steps:
       - checkout
-      - when:
-          condition:
-            equal: [ main, << pipeline.git.branch >> ]
-          steps:
-            - run: echo "I am on main within when clause"
-      - run: echo "I am on main outside of when clause"
+      - run: echo "AWS Convenient image"
 
 workflows:
   my-workflow:
     jobs:
-      - my-job
+      - build
