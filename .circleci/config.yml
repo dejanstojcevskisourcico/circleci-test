@@ -8,6 +8,8 @@ jobs:
     machine:
       image: ubuntu-2204:2023.04.2
     steps:
+      - checkout
+      - run: ls -ltr /
       - run:
           name: Install OpenVPN
           command: |
