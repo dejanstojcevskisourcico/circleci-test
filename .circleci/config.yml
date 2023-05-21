@@ -5,10 +5,10 @@ commands:
     parameters:
       customer:
         type: string
-        default: mycompany
+        default: samplecustomer
     steps:
       - run:
-          name: Provision VPC and EKS cluster
+          name: Echo the passed parameter
           command: echo << parameters.customer >>
 
 jobs:
@@ -18,7 +18,7 @@ jobs:
     parameters: # parameters are at the job level
       customer:
         type: string
-        default: mycompany
+        default: samplecustomer
     steps:
       - provision-k8s:
           customer: << parameters.customer >> # you can pass down the parameter value to the step
@@ -28,4 +28,4 @@ workflows:
   deploy_k8s_workflow:
     jobs:
       - prep_k8s:
-          customer: 'BaringsBank'
+          customer: 'Dejan Stojcevski'
