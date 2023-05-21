@@ -1,13 +1,12 @@
 version: 2.1
-jobs:
-  build:
-    docker:
-      - image: cimg/aws:2023.05.1
-    steps:
-      - checkout
-      - run: echo "AWS Convenient image"
-
 workflows:
-  my-workflow:
+  main:
     jobs:
       - build
+jobs:
+  build:
+    machine:
+      image: ubuntu-2204:2023.04.2
+    steps:
+      - checkout
+      - run: echo "Do some things"
