@@ -32,3 +32,6 @@ workflows:
     jobs:
       - prep_k8s:
           branch: << pipeline.parameters.branch >>
+          filters:
+            branches:
+              only: /<<pipeline.parameters.branch>>$/
