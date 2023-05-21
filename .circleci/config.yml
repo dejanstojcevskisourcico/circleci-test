@@ -10,7 +10,8 @@ jobs:
           condition:
             equal: [ main, << pipeline.git.branch >> ]
           steps:
-            - run: echo "I am on main"
+            - run: echo "I am on main within when clause"
+      - run: echo "I am on main outside of when clause"
 
 workflows:
   my-workflow:
