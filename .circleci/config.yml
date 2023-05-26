@@ -1,18 +1,24 @@
 version: 2.1
 
-jobs:
-  build:
+executors:
+  build-executor:
     machine:
       image: ubuntu-2204:2023.04.2
+          
+jobs:
+  build:
+    executor: build-executor
     steps:
       - checkout
       - helm/install-helm-client:
           version: v3.12.0
       - run:
           name: Install Helm S3 Plugin
+          description: "Command to install helm s3 plugin"
           command: helm plugin install https://github.com/hypnoglow/helm-s3.git --version 0.14.0
       - run:
           name: Install Helm SSM Plugin
+          description: "Command to install helm ssm plugin"
           command: helm plugin add https://github.com/codacy/helm-ssm
       - terraform/install:
           terraform_version: 1.4.6
