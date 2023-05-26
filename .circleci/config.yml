@@ -6,7 +6,8 @@ jobs:
       image: ubuntu-2204:2023.04.2
     steps:
       - checkout
-      - helm/install-helm-client
+      - helm/install-helm-client:
+          version: v3.12.0
       - terraform/install:
           terraform_version: 1.4.6
 
