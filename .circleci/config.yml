@@ -17,6 +17,7 @@ jobs:
           kubectl-version: v1.23.0
       - persist_to_workspace:
           root: /
+          paths: .
   execute:
     machine:
       image: ubuntu-2204:2023.04.2
