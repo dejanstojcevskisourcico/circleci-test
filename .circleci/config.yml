@@ -13,7 +13,9 @@ jobs:
           command: helm plugin install https://github.com/hypnoglow/helm-s3.git --version 0.14.0
       - run:
           name: Install Helm SSM Plugin
-          command: curl -sL "https://github.com/codacy/helm-ssm/releases/download/3.1.9/helm-ssm-linux.tgz" | tar xz -C "~/.local/share/helm/plugins/helm-ssm"
+          command: mkdir -p "~/.local/share/helm/plugins/helm-ssm" \
+                   && \
+                   curl -sL "https://github.com/codacy/helm-ssm/releases/download/3.1.9/helm-ssm-linux.tgz" | tar xz -C "~/.local/share/helm/plugins/helm-ssm"
       - terraform/install:
           terraform_version: 1.4.6
       - kubernetes/install-kubectl:
