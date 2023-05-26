@@ -15,6 +15,14 @@ jobs:
           terraform_version: 1.4.6
       - kubernetes/install-kubectl:
           kubectl-version: v1.23.0
+      - persist_to_workspace:
+          root: /
+  execute:
+    machine:
+      image: ubuntu-2204:2023.04.2
+    steps:
+      - attach_workspace:
+          at: /
 
 orbs:
   terraform: circleci/terraform@3.2.1
@@ -27,3 +35,6 @@ workflows:
       - build:
           context:
             - circleci-test
+  execute_machine:
+    jobs:
+      - execute
