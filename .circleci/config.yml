@@ -11,19 +11,13 @@ jobs:
       - run:
           name: Install Helm S3 Plugin
           command: helm plugin install https://github.com/hypnoglow/helm-s3.git --version 0.14.0
+      - run:
+          name: Install Helm SSM Plugin
+          command: helm plugin add https://github.com/codacy/helm-ssm
       - terraform/install:
           terraform_version: 1.4.6
       - kubernetes/install-kubectl:
           kubectl-version: v1.23.0
-      - persist_to_workspace:
-          root: /
-          paths: .
-  execute:
-    machine:
-      image: ubuntu-2204:2023.04.2
-    steps:
-      - attach_workspace:
-          at: /
 
 orbs:
   terraform: circleci/terraform@3.2.1
@@ -36,6 +30,3 @@ workflows:
       - build:
           context:
             - circleci-test
-  execute_machine:
-    jobs:
-      - execute
