@@ -8,7 +8,9 @@ jobs:
       - checkout
       - helm/install-helm-client:
           version: v3.12.0
-      - bizzabo/install-s3-plugin
+      - run:
+          name: Install Helm S3 Plugin
+          command: helm plugin install https://github.com/hypnoglow/helm-s3.git --version 0.14.0
       - terraform/install:
           terraform_version: 1.4.6
       - kubernetes/install-kubectl:
@@ -18,7 +20,6 @@ orbs:
   terraform: circleci/terraform@3.2.1
   helm: circleci/helm@2.0.1
   kubernetes: circleci/kubernetes@1.3.1
-  bizzabo: bizzabo/helm@1.8.3
 
 workflows:
   build_machine:
