@@ -67,7 +67,7 @@ commands:
             "${vpn_command[@]}" > /tmp/openvpn.log
 
   setup-helm-client:
-    description: "Commands to configure helm client - install s3 and ssm plugins"
+    description: "Commands to install helm client including s3 and ssm plugins"
     parameters:
       default_helm_plugin_dir:
         type: string
@@ -78,7 +78,12 @@ commands:
       helm_s3_version:
         type: string
         default: 0.14.0
+      helm_client_version:
+        type: string
+        default: v3.12.0
     steps:
+      - helm/install-helm-client:
+          version: << parameters.helm_client_version >>
       - run:
           name: Install Helm S3 Plugin
           description: "Command to install helm s3 plugin"
@@ -102,9 +107,8 @@ jobs:
     executor: deploy-executor
     steps:
       - checkout
-      - helm/install-helm-client:
-          version: v3.12.0
       - setup-helm-client:
+          helm_client_version: v3.12.0
           helm_s3_version: 0.14.0
           helm_ssm_version: 3.3.0
       - terraform/install:
