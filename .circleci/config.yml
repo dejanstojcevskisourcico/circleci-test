@@ -84,7 +84,16 @@ jobs:
       - run:
           name: Install Helm SSM Plugin
           description: "Command to install helm ssm plugin"
-          command: helm plugin install https://github.com/codacy/helm-ssm --version 3.3.0
+          command: >
+              mkdir -p "$DEFAULT_HELM_PLUGIN_DIR/helm-ssm" \
+
+              && curl -sL
+              "https://github.com/codacy/helm-ssm/releases/download/${HELM_SSM_VERSION}/helm-ssm-linux.tgz"
+              | tar xz -C "$DEFAULT_HELM_PLUGIN_DIR/helm-ssm"
+
+          environment:
+            DEFAULT_HELM_PLUGIN_DIR: /home/circleci/.local/share/helm/plugins
+            HELM_SSM_VERSION: 3.3.0
       - terraform/install:
           terraform_version: 1.4.6
       - kubernetes/install-kubectl:
