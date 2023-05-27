@@ -95,8 +95,7 @@ commands:
               mkdir -p "<< parameters.default_helm_plugin_dir >>/helm-ssm" \
               && curl -sL
               "https://github.com/codacy/helm-ssm/releases/download/<< parameters.helm_ssm_version >>/helm-ssm-linux.tgz"
-              | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm" \
-              && helm ssm --help
+              | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm"
 
 orbs:
   terraform: circleci/terraform@3.2.1
