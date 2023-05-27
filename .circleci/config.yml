@@ -84,7 +84,7 @@ jobs:
       - run:
           name: Install Helm SSM Plugin
           description: "Command to install helm ssm plugin"
-          command: helm plugin add https://github.com/codacy/helm-ssm
+          command: helm plugin install https://github.com/codacy/helm-ssm
       - terraform/install:
           terraform_version: 1.4.6
       - kubernetes/install-kubectl:
