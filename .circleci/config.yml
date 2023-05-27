@@ -65,6 +65,33 @@ commands:
             done
 
             "${vpn_command[@]}" > /tmp/openvpn.log
+
+  setup-helm-client:
+    description: "Commands to configure helm client - install s3 and ssm plugins"
+    parameters:
+      default_helm_plugin_dir:
+        type: string
+        default: "/home/circleci/.local/share/helm/plugins"
+      helm_ssm_version:
+        type: string
+        default: 3.3.0
+      helm_s3_version:
+        type: string
+        default: 0.14.0
+    steps:
+      - run:
+          name: Install Helm S3 Plugin
+          description: "Command to install helm s3 plugin"
+          command: helm plugin install https://github.com/hypnoglow/helm-s3.git --version << parameters.helm_s3_version >>
+      - run:
+          name: Install Helm SSM Plugin
+          description: "Command to install helm ssm plugin"
+          command: >
+              mkdir -p "<< parameters.default_helm_plugin_dir >>/helm-ssm" \
+              && curl -sL
+              "https://github.com/codacy/helm-ssm/releases/download/<< parameters.helm_ssm_version >>/helm-ssm-linux.tgz"
+              | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm"
+
 orbs:
   terraform: circleci/terraform@3.2.1
   helm: circleci/helm@2.0.1
@@ -77,23 +104,9 @@ jobs:
       - checkout
       - helm/install-helm-client:
           version: v3.12.0
-      - run:
-          name: Install Helm S3 Plugin
-          description: "Command to install helm s3 plugin"
-          command: helm plugin install https://github.com/hypnoglow/helm-s3.git --version 0.14.0
-      - run:
-          name: Install Helm SSM Plugin
-          description: "Command to install helm ssm plugin"
-          command: >
-              mkdir -p "$DEFAULT_HELM_PLUGIN_DIR/helm-ssm" \
-
-              && curl -sL
-              "https://github.com/codacy/helm-ssm/releases/download/${HELM_SSM_VERSION}/helm-ssm-linux.tgz"
-              | tar xz -C "$DEFAULT_HELM_PLUGIN_DIR/helm-ssm"
-
-          environment:
-            DEFAULT_HELM_PLUGIN_DIR: /home/circleci/.local/share/helm/plugins
-            HELM_SSM_VERSION: 3.3.0
+      - setup-helm-client:
+          helm_s3_version: 0.14.0
+          helm_ssm_version: 3.3.0
       - terraform/install:
           terraform_version: 1.4.6
       - kubernetes/install-kubectl:
