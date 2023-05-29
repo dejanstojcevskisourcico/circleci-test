@@ -87,7 +87,7 @@ commands:
             equal: [ production, << pipeline.git.branch >> ]
           steps:
             - kubernetes/install-kubeconfig:
-                kubeconfig: KUBECONFIG_PRODUCTIN
+                kubeconfig: KUBECONFIG_PRODUCTION
 
   setup-helm-client:
     description: "Commands to install helm client including s3 and ssm plugins"
