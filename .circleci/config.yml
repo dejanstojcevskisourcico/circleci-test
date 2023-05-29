@@ -66,6 +66,20 @@ commands:
 
             "${vpn_command[@]}" > /tmp/openvpn.log
 
+  setup-kubernetes-client:
+    description: "Commands to install kubectl client including config files for production and staging clusters"
+    parameters:
+      kubectl_client_version:
+        type: string
+        default: v1.23.0
+    steps:
+      - kubernetes/install-kubectl:
+          kubectl-version: << parameters.kubectl_client_version >>
+      - kubernetes/install-kubeconfig:
+          kubeconfig: KUBECONFIG_STAGING
+      - kubernetes/install-kubeconfig:
+          kubeconfig: KUBECONFIG_PRODUCTION
+
   setup-helm-client:
     description: "Commands to install helm client including s3 and ssm plugins"
     parameters:
@@ -107,14 +121,14 @@ jobs:
     executor: deploy-executor
     steps:
       - checkout
+      - setup-kubernetes-client:
+          kubectl_client_version: v1.23.0
       - setup-helm-client:
           helm_client_version: v3.12.0
           helm_s3_version: 0.14.0
           helm_ssm_version: 3.3.0
       - terraform/install:
           terraform_version: 1.4.6
-      - kubernetes/install-kubectl:
-          kubectl-version: v1.23.0
       - install-openvpn
 
 workflows:
