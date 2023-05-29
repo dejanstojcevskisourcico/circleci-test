@@ -75,10 +75,19 @@ commands:
     steps:
       - kubernetes/install-kubectl:
           kubectl-version: << parameters.kubectl_client_version >>
-      - kubernetes/install-kubeconfig:
-          kubeconfig: KUBECONFIG_STAGING
-      - kubernetes/install-kubeconfig:
-          kubeconfig: KUBECONFIG_PRODUCTION
+      - when:
+          condition:
+            not:
+              equal: [ production, << pipeline.git.branch >> ]
+          steps:
+            - kubernetes/install-kubeconfig:
+                kubeconfig: KUBECONFIG_STAGING
+      - when:
+          condition:
+            equal: [ production, << pipeline.git.branch >> ]
+          steps:
+            - kubernetes/install-kubeconfig:
+                kubeconfig: KUBECONFIG_PRODUCTIN
 
   setup-helm-client:
     description: "Commands to install helm client including s3 and ssm plugins"
