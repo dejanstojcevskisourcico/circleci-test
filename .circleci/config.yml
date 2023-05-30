@@ -90,7 +90,7 @@ commands:
                 kubeconfig: KUBECONFIG_PRODUCTION
 
   setup-helm-client:
-    description: "Commands to install helm client including s3 and ssm plugins"
+    description: "Commands to install and configure helm cli client"
     parameters:
       default_helm_plugin_dir:
         type: string
@@ -108,14 +108,12 @@ commands:
       - helm/install-helm-client:
           version: << parameters.helm_client_version >>
       - run:
-          name: Install Helm S3 Plugin
-          description: "Command to install helm s3 plugin"
-          command: helm plugin install https://github.com/hypnoglow/helm-s3.git --version << parameters.helm_s3_version >>
-      - run:
-          name: Install Helm SSM Plugin
-          description: "Command to install helm ssm plugin"
-          command: >
-              mkdir -p "<< parameters.default_helm_plugin_dir >>/helm-ssm" && curl -sL "https://github.com/codacy/helm-ssm/releases/download/<< parameters.helm_ssm_version >>/helm-ssm-linux.tgz" | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm"
+          name: Configure helm client
+          description: "Commands to configure helm cli client by installing plugins and initializing repository"
+          command: |
+            helm plugin install https://github.com/hypnoglow/helm-s3.git --version << parameters.helm_s3_version >>
+            mkdir -p "<< parameters.default_helm_plugin_dir >>/helm-ssm" && curl -sL "https://github.com/codacy/helm-ssm/releases/download/<< parameters.helm_ssm_version >>/helm-ssm-linux.tgz" | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm"
+              
 
 orbs:
   terraform: circleci/terraform@3.2.1
