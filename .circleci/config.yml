@@ -15,6 +15,44 @@ commands:
           command: |
             sudo apt-get install openvpn openvpn-systemd-resolved
   
+  check-ip-before-vpn-connection:
+    description: "Commands to check IP before VPN connection"
+    steps:
+      - run:
+          name: Check IP before VPN connection
+          command: |
+            ip a
+            echo "Public IP before VPN connection is $(curl checkip.amazonaws.com)"
+  
+  check-ip-after-vpn-connection:
+    description: "Commands to check IP after VPN connection"
+    steps:
+      - run:
+          name: Check IP after VPN connection
+          command: |
+            counter=1
+            until [ -f /tmp/openvpn.log ] && [ "$(grep -c "Initialization Sequence Completed" /tmp/openvpn.log)" != 0 ] || [ "$counter" -ge 5 ]; do
+              ((counter++))
+              echo "Attempting to connect to VPN server..."
+              sleep 1;
+            done
+
+            if [ ! -f /tmp/openvpn.log ] || (! grep -iq "Initialization Sequence Completed" /tmp/openvpn.log); then
+              printf "\nUnable to establish connection within the allocated time ---> Giving up.\n"
+            else
+              printf "\nVPN connected\n"
+              printf "\nPublic IP is now %s\n" "$(curl -s http://checkip.amazonaws.com)"
+            fi
+  
+  disconnect-openvpn:
+    description: "Commands to disconnect VPN connection"
+    steps:
+      - run:
+          name: Disconnect VPN connection
+          command: |
+            sudo killall openvpn || true
+          when: always
+  
   connect-openvpn:
     description: "Commands to configure OpenVPN client and make a VPN connection"
     steps:
@@ -135,6 +173,10 @@ jobs:
       - terraform/install:
           terraform_version: 1.4.6
       - install-openvpn
+      - check-ip-before-vpn-connection
+      - connect-openvpn
+      - check-ip-after-vpn-connection
+      - disconnect-openvpn
 
 workflows:
   deploy_workflow:
