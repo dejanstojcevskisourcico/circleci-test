@@ -170,9 +170,7 @@ jobs:
       - connect-openvpn
       - check-ip-after-vpn-connection
       - run:
-          command: |
-            telnet 10.0.0.75 9092
-            telnet 10.0.0.75 9094
+          command: telnet b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9092
       - disconnect-openvpn
 
 workflows:
