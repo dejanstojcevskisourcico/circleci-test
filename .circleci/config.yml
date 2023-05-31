@@ -20,7 +20,7 @@ commands:
             
             sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-$(sed 's/UBUNTU_CODENAME=//;t;d' /etc/os-release).list
             sudo apt update && sudo apt install openvpn3 openvpn-systemd-resolved
-            
+
   
   check-ip-before-vpn-connection:
     description: "Commands to check IP before VPN connection"
@@ -169,6 +169,10 @@ jobs:
       - check-ip-before-vpn-connection
       - connect-openvpn
       - check-ip-after-vpn-connection
+      - run:
+          command: |
+            nslookup b-2.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com
+            nslookup b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com
       - disconnect-openvpn
 
 workflows:
