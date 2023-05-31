@@ -3,10 +3,8 @@ version: 2.1
 executors:
   deploy-executor:
     machine:
-      #image: ubuntu-2204:2023.04.2
-      image: ubuntu-2004:202201-02
-
-
+      image: ubuntu-2204:2023.04.2
+     
 commands:
 
   install-openvpn:
@@ -98,7 +96,7 @@ commands:
                 echo $IP
             done
 
-            for SYS_RES_DNS in $(systemd-resolve --status | grep 'DNS Servers'|awk '{print $3}')
+            for SYS_RES_DNS in $(resolvectl status | grep 'DNS Servers'|awk '{print $3}')
               do
                 vpn_command+=(--route $SYS_RES_DNS 255.255.255.255 net_gateway)
                 echo $SYS_RES_DNS
