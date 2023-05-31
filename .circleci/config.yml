@@ -3,7 +3,8 @@ version: 2.1
 executors:
   deploy-executor:
     machine:
-      image: ubuntu-2204:2023.04.2
+      #image: ubuntu-2204:2023.04.2
+      image: ubuntu-2004:202201-02
 
 commands:
 
