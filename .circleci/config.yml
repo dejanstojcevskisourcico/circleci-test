@@ -173,6 +173,10 @@ jobs:
           command: |
             nslookup b-2.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com
             nslookup b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com
+            nc b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9092
+            nc b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9094
+            nc b-2.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9092
+            nc b-2.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9094
       - disconnect-openvpn
 
 workflows:
