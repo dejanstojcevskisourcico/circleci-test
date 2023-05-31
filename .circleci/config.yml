@@ -157,8 +157,8 @@ jobs:
     executor: deploy-executor
     steps:
       - checkout
-      #- setup-kubernetes-client:
-      #    kubectl_client_version: v1.23.0
+      - setup-kubernetes-client:
+          kubectl_client_version: v1.23.0
       #- setup-helm-client:
       #    helm_client_version: v3.12.0
       #    helm_s3_version: 0.14.0
@@ -169,14 +169,6 @@ jobs:
       - check-ip-before-vpn-connection
       - connect-openvpn
       - check-ip-after-vpn-connection
-      - run:
-          command: |
-            nslookup b-2.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com
-            nslookup b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com
-            nc b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9092
-            nc b-1.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9094
-            nc b-2.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9092
-            nc b-2.stagenvamit1mskcluster.ez8pmy.c8.kafka.eu-west-1.amazonaws.com 9094
       - disconnect-openvpn
 
 workflows:
