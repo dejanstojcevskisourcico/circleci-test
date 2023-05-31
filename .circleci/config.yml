@@ -3,8 +3,8 @@ version: 2.1
 executors:
   deploy-executor:
     machine:
-      image: ubuntu-2204:2023.04.2
-      #image: ubuntu-2004:202201-02
+      #image: ubuntu-2204:2023.04.2
+      image: ubuntu-2004:202201-02
      
 commands:
 
@@ -81,7 +81,7 @@ commands:
             
             echo "route 169.254.0.0 255.255.0.0 net_gateway" >> /tmp/config.ovpn
             
-            for SYS_RES_DNS in $(resolvectl status | grep 'DNS Servers'|awk '{print $3}')
+            for SYS_RES_DNS in $(systemd-resolved --status | grep 'DNS Servers'|awk '{print $3}')
               do
                 echo "route $SYS_RES_DNS 255.255.0.0 net_gateway" >> /tmp/config.ovpn
                 echo $SYS_RES_DNS
