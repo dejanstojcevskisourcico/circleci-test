@@ -3,7 +3,8 @@ version: 2.1
 executors:
   deploy-executor:
     machine:
-      image: ubuntu-2204:2023.04.2
+      #image: ubuntu-2204:2023.04.2
+      image: ubuntu-2004:202201-02
      
 commands:
 
@@ -13,6 +14,7 @@ commands:
       - run:
           name: Install OpenVPN
           command: |
+            sudo apt-get update
             sudo apt-get install openvpn openvpn-systemd-resolved
   
   check-ip-before-vpn-connection:
@@ -96,7 +98,7 @@ commands:
                 echo $IP
             done
 
-            for SYS_RES_DNS in $(resolvectl status | grep 'DNS Servers'|awk '{print $3}')
+            for SYS_RES_DNS in $(systemd-resolve --status | grep 'DNS Servers'|awk '{print $3}')
               do
                 vpn_command+=(--route $SYS_RES_DNS 255.255.255.255 net_gateway)
                 echo $SYS_RES_DNS
@@ -164,14 +166,14 @@ jobs:
     executor: deploy-executor
     steps:
       - checkout
-      - setup-kubernetes-client:
-          kubectl_client_version: v1.23.0
-      - setup-helm-client:
-          helm_client_version: v3.12.0
-          helm_s3_version: 0.14.0
-          helm_ssm_version: 3.3.0
-      - terraform/install:
-          terraform_version: 1.4.6
+      #- setup-kubernetes-client:
+      #    kubectl_client_version: v1.23.0
+      #- setup-helm-client:
+      #    helm_client_version: v3.12.0
+      #    helm_s3_version: 0.14.0
+      #    helm_ssm_version: 3.3.0
+      #- terraform/install:
+      #    terraform_version: 1.4.6
       - install-openvpn
       - check-ip-before-vpn-connection
       - connect-openvpn
