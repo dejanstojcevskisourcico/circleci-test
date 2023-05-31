@@ -3,7 +3,6 @@ version: 2.1
 executors:
   deploy-executor:
     machine:
-      #image: ubuntu-2204:2023.04.2
       image: ubuntu-2004:202201-02
      
 commands:
@@ -17,7 +16,6 @@ commands:
             sudo apt update && sudo apt install apt-transport-https
             sudo wget https://swupdate.openvpn.net/repos/openvpn-repo-pkg-key.pub
             sudo apt-key add openvpn-repo-pkg-key.pub
-            
             sudo wget -O /etc/apt/sources.list.d/openvpn3.list https://swupdate.openvpn.net/community/openvpn3/repos/openvpn3-$(sed 's/UBUNTU_CODENAME=//;t;d' /etc/os-release).list
             sudo apt update && sudo apt install openvpn3 openvpn-systemd-resolved
   
@@ -69,30 +67,24 @@ commands:
           background: true
           command: |
             echo $VPN_CLIENT_CONFIG | base64 --decode > /tmp/config.ovpn
-
             ET_phone_home=$(ss -Hnto state established '( sport = :ssh )' | head -n1 | awk '{ split($4, a, ":"); print a[1] }')
             ## In case you're using an image with Ubuntu < 20.04, replace the above line with:
             ## ET_phone_home=$(ss -an | grep 'ESTAB .*:22' | head -n1 | awk '{ split($6, a, ":"); print a[1] }')
             echo $ET_phone_home
-            
             if [ -n "$ET_phone_home" ]; then
               echo "route $ET_phone_home 255.255.255.255 net_gateway" >> /tmp/config.ovpn
             fi
-            
             echo "route 169.254.0.0 255.255.0.0 net_gateway" >> /tmp/config.ovpn
-            
             for SYS_RES_DNS in $(systemd-resolved --status | grep 'DNS Servers'|awk '{print $3}')
               do
                 echo "route $SYS_RES_DNS 255.255.0.0 net_gateway" >> /tmp/config.ovpn
                 echo $SYS_RES_DNS
             done
-
             for IP in $(host runner.circleci.com | awk '{ print $4; }')
               do 
                 echo "route $IP 255.255.255.255 net_gateway" >> /tmp/config.ovpn
                 echo $IP
             done
-
             # This will start the connection
             sudo openvpn3 session-start --config /tmp/config.ovpn > /tmp/openvpn.log
 
