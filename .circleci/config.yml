@@ -69,8 +69,8 @@ jobs:
       - setup-helm-client:
           helm_s3_version: 0.14.0
           helm_ssm_version: 3.3.0
-      - terraform/install:
-          terraform_version: 1.4.6
+      # - terraform/install:
+      #     terraform_version: 1.4.6
 
 workflows:
   deploy_workflow:
