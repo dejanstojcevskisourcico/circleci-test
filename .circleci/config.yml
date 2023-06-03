@@ -4,31 +4,32 @@ executors:
   deploy-executor:
     docker:
       - image: cimg/aws:2023.05
+
+orbs:
+  terraform: circleci/terraform@3.2.1
      
 commands:
 
   setup-kubernetes-client:
-    description: "Commands to install kubectl client including config files for production and staging clusters"
-    parameters:
-      kubectl_client_version:
-        type: string
-        default: v1.23.0
+    description: "Commands to configure kubectl cli client"
     steps:
-      # - kubernetes/install-kubectl:
-      #     kubectl-version: << parameters.kubectl_client_version >>
       - when:
           condition:
             not:
               equal: [ production, << pipeline.git.branch >> ]
           steps:
-            - kubernetes/install-kubeconfig:
-                kubeconfig: KUBECONFIG_STAGING
+            - run:
+                command: |
+                  mkdir -p $HOME/.kube
+                  echo -n "${KUBECONFIG_STAGING}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
       - when:
           condition:
             equal: [ production, << pipeline.git.branch >> ]
           steps:
-            - kubernetes/install-kubeconfig:
-                kubeconfig: KUBECONFIG_PRODUCTION
+            - run:
+                command: |
+                  mkdir -p $HOME/.kube
+                  echo -n "${KUBECONFIG_PRODUCTION}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
 
   setup-helm-client:
     description: "Commands to configure helm cli client"
@@ -50,19 +51,13 @@ commands:
             helm plugin install https://github.com/hypnoglow/helm-s3.git --version << parameters.helm_s3_version >>
             mkdir -p "<< parameters.default_helm_plugin_dir >>/helm-ssm" && curl -sL "https://github.com/codacy/helm-ssm/releases/download/<< parameters.helm_ssm_version >>/helm-ssm-linux.tgz" | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm" && echo "Installed plugin: ssm"
             helm repo add vatbox-helm-repo s3://vatbox-helm-repo && echo "Repository vatbox-helm-repo added"
-              
-
-orbs:
-  terraform: circleci/terraform@3.2.1
-  kubernetes: circleci/kubernetes@1.3.1
           
 jobs:
   deploy:
     executor: deploy-executor
     steps:
       - checkout
-      - setup-kubernetes-client:
-         kubectl_client_version: v1.23.0
+      - setup-kubernetes-client
       - setup-helm-client:
          helm_s3_version: 0.14.0
          helm_ssm_version: 3.3.0
