@@ -46,8 +46,8 @@ commands:
         type: string
         default: v3.12.0
     steps:
-      - helm/install-helm-client:
-          version: << parameters.helm_client_version >>
+      # - helm/install-helm-client:
+      #     version: << parameters.helm_client_version >>
       - run:
           name: Configure helm client
           description: "Commands to configure helm cli client by installing plugins and initializing repository"
