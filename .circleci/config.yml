@@ -14,8 +14,8 @@ commands:
         type: string
         default: v1.23.0
     steps:
-      - kubernetes/install-kubectl:
-          kubectl-version: << parameters.kubectl_client_version >>
+      # - kubernetes/install-kubectl:
+      #     kubectl-version: << parameters.kubectl_client_version >>
       - when:
           condition:
             not:
@@ -31,7 +31,7 @@ commands:
                 kubeconfig: KUBECONFIG_PRODUCTION
 
   setup-helm-client:
-    description: "Commands to install and configure helm cli client"
+    description: "Commands to configure helm cli client"
     parameters:
       default_helm_plugin_dir:
         type: string
@@ -42,12 +42,7 @@ commands:
       helm_s3_version:
         type: string
         default: 0.14.0
-      helm_client_version:
-        type: string
-        default: v3.12.0
     steps:
-      # - helm/install-helm-client:
-      #     version: << parameters.helm_client_version >>
       - run:
           name: Configure helm client
           description: "Commands to configure helm cli client by installing plugins and initializing repository"
@@ -59,7 +54,6 @@ commands:
 
 orbs:
   terraform: circleci/terraform@3.2.1
-  helm: circleci/helm@2.0.1
   kubernetes: circleci/kubernetes@1.3.1
           
 jobs:
@@ -70,7 +64,6 @@ jobs:
       - setup-kubernetes-client:
          kubectl_client_version: v1.23.0
       - setup-helm-client:
-         helm_client_version: v3.12.0
          helm_s3_version: 0.14.0
          helm_ssm_version: 3.3.0
       - terraform/install:
