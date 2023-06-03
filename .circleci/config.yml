@@ -12,21 +12,28 @@ commands:
 
   setup-kubernetes-client:
     description: "Commands to configure kubectl cli client"
+    parameters:
+      cluster_type:
+        type: string
+        default: "staging"
     steps:
       - when:
           condition:
-            not:
-              equal: [ production, << pipeline.git.branch >> ]
+            equal: [ staging, << parameters.cluster_type >> ]
           steps:
             - run:
+                name: Configure kubectl cli for staging
+                description: "Commands to create kubectl configuration file for staging eks cluster"
                 command: |
                   mkdir -p $HOME/.kube
                   echo -n "${KUBECONFIG_STAGING}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
       - when:
           condition:
-            equal: [ production, << pipeline.git.branch >> ]
+            equal: [ production, << parameters.cluster_type >> ]
           steps:
             - run:
+                name: Configure kubectl cli for production
+                description: "Commands to create kubectl configuration file for production eks cluster"
                 command: |
                   mkdir -p $HOME/.kube
                   echo -n "${KUBECONFIG_PRODUCTION}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
@@ -57,12 +64,13 @@ jobs:
     executor: deploy-executor
     steps:
       - checkout
-      - setup-kubernetes-client
+      - setup-kubernetes-client:
+          cluster_type: staging
       - setup-helm-client:
-         helm_s3_version: 0.14.0
-         helm_ssm_version: 3.3.0
+          helm_s3_version: 0.14.0
+          helm_ssm_version: 3.3.0
       - terraform/install:
-         terraform_version: 1.4.6
+          terraform_version: 1.4.6
 
 workflows:
   deploy_workflow:
