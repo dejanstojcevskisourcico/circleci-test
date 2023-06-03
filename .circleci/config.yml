@@ -27,6 +27,7 @@ commands:
                 command: |
                   mkdir -p $HOME/.kube
                   echo -n "${KUBECONFIG_STAGING}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
+                  echo "kubectl configured for staging eks"
       - when:
           condition:
             equal: [ production, << parameters.cluster_type >> ]
@@ -37,6 +38,7 @@ commands:
                 command: |
                   mkdir -p $HOME/.kube
                   echo -n "${KUBECONFIG_PRODUCTION}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
+                  echo "kubectl configured for production eks"
 
   setup-helm-client:
     description: "Commands to configure helm cli client"
@@ -69,8 +71,6 @@ jobs:
       - setup-helm-client:
           helm_s3_version: 0.14.0
           helm_ssm_version: 3.3.0
-      # - terraform/install:
-      #     terraform_version: 1.4.6
 
 workflows:
   deploy_workflow:
