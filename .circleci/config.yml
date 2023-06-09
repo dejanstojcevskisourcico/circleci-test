@@ -2,6 +2,11 @@ version: 2.1
 
 setup: true
 
+parameters:
+  execute_workflow:
+    type: boolean
+    default: true
+
 orbs:
   continuation: circleci/continuation@0.4.0
 
