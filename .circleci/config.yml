@@ -2,11 +2,6 @@ version: 2.1
 
 setup: true
 
-parameters:
-  execute_workflow:
-    type: boolean
-    default: true
-
 orbs:
   continuation: circleci/continuation@0.4.0
 
@@ -18,7 +13,7 @@ jobs:
     steps:
       - checkout
       - continuation/continue:
-          parameters: '{"execute_workflow": false}'
+          parameters: '{"execute_workflow": "false"}'
           configuration_path: .circleci/config_main.yml
 
 workflows:
