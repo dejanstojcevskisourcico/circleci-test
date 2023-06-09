@@ -2,8 +2,8 @@ version: 2.1
 
 parameters:
   execute_workflow:
-        type: boolean
-        default: true
+    type: boolean
+    default: true
 
 executors:
   deploy-executor:
