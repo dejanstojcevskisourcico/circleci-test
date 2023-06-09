@@ -1,9 +1,9 @@
 version: 2.1
 
 parameters:
-  execute_workflow:
-    type: boolean
-    default: true
+  workflow_type:
+    type: string
+    default: ""
 
 executors:
   deploy-executor:
@@ -72,7 +72,9 @@ jobs:
 
 workflows:
   deploy_workflow:
-    when: << pipeline.parameters.execute_workflow >>
+    when: 
+      condition:
+        equal: [ "deploy", << pipeline.parameters.workflow_type >> ]
     jobs:
       - deploy:
           context:
