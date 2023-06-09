@@ -14,14 +14,11 @@ commands:
 
   setup-kubernetes-client:
     description: "Commands to configure kubectl cli client"
-    parameters:
-      cluster_type:
-        type: string
-        default: "staging"
     steps:
       - when:
           condition:
-            equal: [ staging, << parameters.cluster_type >> ]
+            not:
+              equal: [ production, << pipeline.git.branch >> ]
           steps:
             - run:
                 name: Configure kubectl cli for staging
@@ -32,7 +29,7 @@ commands:
                   echo "kubectl configured for staging eks"
       - when:
           condition:
-            equal: [ production, << parameters.cluster_type >> ]
+            equal: [ production, << pipeline.git.branch >> ]
           steps:
             - run:
                 name: Configure kubectl cli for production
@@ -68,8 +65,7 @@ jobs:
     executor: deploy-executor
     steps:
       - checkout
-      - setup-kubernetes-client:
-          cluster_type: staging
+      - setup-kubernetes-client
       - setup-helm-client:
           helm_s3_version: 0.14.0
           helm_ssm_version: 3.3.0
