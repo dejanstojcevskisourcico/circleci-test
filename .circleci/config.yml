@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - continuation/continue:
-          parameters: '{ "workflow_type": "deploy" }'
+          parameters: '{ "workflow_type": "delete" }'
           configuration_path: .circleci/config_main.yml
 
 workflows:
