@@ -1,0 +1,80 @@
+version: 2.1
+
+executors:
+  deploy-executor:
+    docker:
+      - image: cimg/aws:2023.05
+
+orbs:
+  terraform: circleci/terraform@3.2.1
+     
+commands:
+
+  setup-kubernetes-client:
+    description: "Commands to configure kubectl cli client"
+    parameters:
+      cluster_type:
+        type: string
+        default: "staging"
+    steps:
+      - when:
+          condition:
+            equal: [ staging, << parameters.cluster_type >> ]
+          steps:
+            - run:
+                name: Configure kubectl cli for staging
+                description: "Commands to create kubectl configuration file for staging eks cluster"
+                command: |
+                  mkdir -p $HOME/.kube
+                  echo -n "${KUBECONFIG_STAGING}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
+                  echo "kubectl configured for staging eks"
+      - when:
+          condition:
+            equal: [ production, << parameters.cluster_type >> ]
+          steps:
+            - run:
+                name: Configure kubectl cli for production
+                description: "Commands to create kubectl configuration file for production eks cluster"
+                command: |
+                  mkdir -p $HOME/.kube
+                  echo -n "${KUBECONFIG_PRODUCTION}" | base64 --decode > $HOME/.kube/config | chmod 600 $HOME/.kube/config
+                  echo "kubectl configured for production eks"
+
+  setup-helm-client:
+    description: "Commands to configure helm cli client"
+    parameters:
+      default_helm_plugin_dir:
+        type: string
+        default: "/home/circleci/.local/share/helm/plugins"
+      helm_ssm_version:
+        type: string
+        default: 3.3.0
+      helm_s3_version:
+        type: string
+        default: 0.14.0
+    steps:
+      - run:
+          name: Configure helm client
+          description: "Commands to configure helm cli client by installing plugins and initializing repository"
+          command: |
+            helm plugin install https://github.com/hypnoglow/helm-s3.git --version << parameters.helm_s3_version >>
+            mkdir -p "<< parameters.default_helm_plugin_dir >>/helm-ssm" && curl -sL "https://github.com/codacy/helm-ssm/releases/download/<< parameters.helm_ssm_version >>/helm-ssm-linux.tgz" | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm" && echo "Installed plugin: ssm"
+            helm repo add vatbox-helm-repo s3://vatbox-helm-repo && echo "Repository vatbox-helm-repo added"
+          
+jobs:
+  deploy:
+    executor: deploy-executor
+    steps:
+      - checkout
+      - setup-kubernetes-client:
+          cluster_type: staging
+      - setup-helm-client:
+          helm_s3_version: 0.14.0
+          helm_ssm_version: 3.3.0
+
+workflows:
+  deploy_workflow:
+    jobs:
+      - deploy:
+          context:
+            - circleci-test
