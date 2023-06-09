@@ -59,7 +59,6 @@ commands:
             helm plugin install https://github.com/hypnoglow/helm-s3.git --version << parameters.helm_s3_version >>
             mkdir -p "<< parameters.default_helm_plugin_dir >>/helm-ssm" && curl -sL "https://github.com/codacy/helm-ssm/releases/download/<< parameters.helm_ssm_version >>/helm-ssm-linux.tgz" | tar xz -C "<< parameters.default_helm_plugin_dir >>/helm-ssm" && echo "Installed plugin: ssm"
             helm repo add vatbox-helm-repo s3://vatbox-helm-repo && echo "Repository vatbox-helm-repo added"
-            echo << pipeline.parameters.execute_workflow >>
           
 jobs:
   deploy:
@@ -73,9 +72,7 @@ jobs:
 
 workflows:
   deploy_workflow:
-    when:
-      condition:
-        equal: [ true, << pipeline.parameters.execute_workflow >> ]
+    when: << pipeline.parameters.execute_workflow >>
     jobs:
       - deploy:
           context:
