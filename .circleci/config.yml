@@ -14,8 +14,8 @@ jobs:
       - checkout
       - continuation/continue:
           parameters: '{}'
-          configuration_path: config_main.yml
-          
+          configuration_path: .circleci/config_main.yml
+
 workflows:
   setup-workflow:
     jobs:
