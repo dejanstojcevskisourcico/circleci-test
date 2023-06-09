@@ -12,8 +12,12 @@ jobs:
 
     steps:
       - checkout
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export DEPLOY_WORKFLOW="false"' >> "$BASH_ENV"
       - continuation/continue:
-          parameters: '{ "deploy_workflow": false }'
+          parameters: '{ "deploy_workflow": ${DEPLOY_WORKFLOW} }'
           configuration_path: .circleci/config_main.yml
 
 workflows:
