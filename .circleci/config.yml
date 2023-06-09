@@ -13,7 +13,7 @@ jobs:
     steps:
       - checkout
       - continuation/continue:
-          parameters: '{"execute_workflow": false}'
+          parameters: '{"pipeline.parameters.execute_workflow": false}'
           configuration_path: .circleci/config_main.yml
 
 workflows:
