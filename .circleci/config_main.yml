@@ -1,12 +1,14 @@
 version: 2.1
 
+parameters:
+  execute_workflow:
+        type: boolean
+        default: true
+
 executors:
   deploy-executor:
     docker:
       - image: cimg/aws:2023.05
-
-orbs:
-  terraform: circleci/terraform@3.2.1
      
 commands:
 
@@ -74,6 +76,9 @@ jobs:
 
 workflows:
   deploy_workflow:
+    when:
+      condition:
+        equal: [ true, << pipeline.parameters.execute_workflow >> ]
     jobs:
       - deploy:
           context:
