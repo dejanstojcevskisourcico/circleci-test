@@ -1,9 +1,15 @@
 version: 2.1
 
 parameters:
-  deploy_workflow:
+  terraform_deploy_true:
     type: boolean
     default: false
+  terraform_deploy_service:
+    type: boolean
+    default: false
+  terraform_deploy_service_target:
+    type: string
+    default: ""
 
 executors:
   deploy-executor:
@@ -72,7 +78,7 @@ jobs:
 
 workflows:
   deploy_workflow:
-    when: << pipeline.parameters.deploy_workflow >>
+    when: << pipeline.parameters.terraform_deploy_true >>
     jobs:
       - deploy:
           context:

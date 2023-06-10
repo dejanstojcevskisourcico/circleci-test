@@ -23,21 +23,33 @@ jobs:
             and populating env variables which in turn are used as input pipeline parameters to config_main.yml
           command: |
             COMMIT_MSG=$(git log -n 1 $CIRCLE_SHA1)
+
             DEPLOY=$(echo $COMMIT_MSG | grep -Po '(?<=deploy=).*') || :
             DEPLOY_TYPE=$(echo $DEPLOY | awk 'BEGIN {FS = ":"} {print $1}')
             DEPLOY_PARAMS=$(echo $DEPLOY | awk 'BEGIN {FS = ":"} {print $2}')
-            echo DEPLOY_TYPE=${DEPLOY_TYPE}
-            echo DEPLOY_PARAMS=${DEPLOY_PARAMS}
-            echo "export DEPLOY_WORKFLOW=false" >> $BASH_ENV
+
+            case $DEPLOY_TYPE in
+              true)
+                echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
+                ;;
+              service)
+                TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
+                echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
+                echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
+                ;;
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
           command: |
             jq -n \
-                --argjson deploy_workflow ${DEPLOY_WORKFLOW} \
+                --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE} \
+                --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE} \
+                --argjson terraform_deploy_service_target ${TERRAFORM_DEPLOY_SERVICE_TARGET} \
                 '
                 {
-                  "deploy_workflow": $deploy_workflow
+                  "terraform_deploy_true": $terraform_deploy_true,
+                  "terraform_deploy_service": $terraform_deploy_service,
+                  "terraform_deploy_service_target": $terraform_deploy_service_target
                 }
                 ' \
             >> .circleci/parameters.json
