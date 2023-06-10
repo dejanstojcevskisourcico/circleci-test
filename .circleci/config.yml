@@ -38,6 +38,10 @@ jobs:
                 echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                 echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
                 echo "Will execute terraform_deploy_service workflow with target ${TERRAFORM_DEPLOY_SERVICE_TARGET}"
+                ;;
+              *)
+                echo "No workflow defined for message ${COMMIT_MSG}"
+                ;;
             esac
       - run: 
           name: Create JSON parameter file
