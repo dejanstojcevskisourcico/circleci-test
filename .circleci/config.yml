@@ -28,7 +28,6 @@ jobs:
             DEPLOY_PARAMS=$(echo $DEPLOY | awk 'BEGIN {FS = ":"} {print $2}')
             echo DEPLOY_TYPE=${DEPLOY_TYPE}
             echo DEPLOY_PARAMS=${DEPLOY_PARAMS}
-
             echo "export DEPLOY_WORKFLOW=false" >> $BASH_ENV
       - run: 
           name: Create JSON parameter file
