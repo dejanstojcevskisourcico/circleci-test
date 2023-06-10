@@ -36,19 +36,20 @@ jobs:
                 TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
                 echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                 echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
-                ;;
             esac
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
           command: |
             jq -n \
-                --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE} \
-                --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE} \
+                --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE:=false} \
+                --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE:=false} \
+                --argjson terraform_deploy_service_target ${TERRAFORM_DEPLOY_SERVICE_TARGET:=""} \
                 '
                 {
                   "terraform_deploy_true": $terraform_deploy_true,
-                  "terraform_deploy_service": $terraform_deploy_service
+                  "terraform_deploy_service": $terraform_deploy_service,
+                  "terraform_deploy_service_target": $terraform_deploy_service_target
                 }
                 ' \
             >> .circleci/parameters.json
