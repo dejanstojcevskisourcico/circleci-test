@@ -37,6 +37,7 @@ jobs:
                 echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                 echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
                 ;;
+            esac
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
