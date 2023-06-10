@@ -13,8 +13,6 @@ jobs:
       All types of actions should exist as parameters and env_vars of the same name should be populated in the job's steps
       These actions are extracted from git commit message and scheduled pipelines
 
-    working_directory: .circleci
-
     parameters:
       deploy_workflow:
         type: env_var_name
@@ -42,10 +40,10 @@ jobs:
                   "deploy_workflow": $deploy_workflow
                 }
                 ' \
-            >> parameters.json
+            >> .circleci/parameters.json
       - continuation/continue:
-          parameters: parameters.json
-          configuration_path: config_main.yml
+          parameters: .circleci/parameters.json
+          configuration_path: .circleci/config_main.yml
 
 workflows:
   setup-workflow:
