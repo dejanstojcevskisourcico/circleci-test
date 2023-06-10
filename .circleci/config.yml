@@ -7,7 +7,7 @@ orbs:
 
 jobs:
 
-  setup:
+  setup-job:
     description: |
       This setup job is used to dynamicaly generate pipeline parameters passed to config_main.yml
       These actions are extracted from git commit message and scheduled pipeline parameters
@@ -60,4 +60,4 @@ jobs:
 workflows:
   setup-workflow:
     jobs:
-      - setup
+      - setup-job
