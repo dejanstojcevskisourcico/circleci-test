@@ -8,12 +8,21 @@ orbs:
 jobs:
   setup:
 
+    parameters:
+      deploy_workflow:
+        type: env_var_name
+        default: DEPLOY_WORKFLOW
+
     executor: continuation/default
 
     steps:
       - checkout
+      - run:
+          name: Set env variable DEPLOY_WORKFLOW
+          command: |
+              echo "export DEPLOY_WORKFLOW=false" >> $BASH_ENV
       - continuation/continue:
-          parameters: '{ "deploy_workflow": false }'
+          parameters: '{ "deploy_workflow": << parameters.deploy_workflow >> }'
           configuration_path: .circleci/config_main.yml
 
 workflows:
