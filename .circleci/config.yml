@@ -25,6 +25,7 @@ jobs:
           name: Create JSON parameter file
           command: |
             echo "{ deploy_workflow: << parameters.deploy_workflow >> }" >> parameters.json
+            cat parameters.json
       - continuation/continue:
           parameters: parameters.json
           configuration_path: .circleci/config_main.yml
