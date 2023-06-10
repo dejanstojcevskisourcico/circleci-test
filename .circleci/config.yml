@@ -10,7 +10,7 @@ jobs:
   setup:
     description: |
       This setup job is used to dynamicaly generate pipeline parameters passed to config_main.yml
-      All types of actions should exist as parameters and env_vars of the same name
+      All types of actions should exist as parameters and env_vars of the same name should be populated in the job's steps
       These actions are extracted from git commit message and scheduled pipelines
 
     parameters:
@@ -23,7 +23,8 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Set env variable DEPLOY_WORKFLOW
+          name: Set env variables
+          description: This step is extracting strings from git commit message thus deciding which workflow should be run in config_main.yml
           command: |
               echo "export DEPLOY_WORKFLOW=true" >> $BASH_ENV
       - run: 
