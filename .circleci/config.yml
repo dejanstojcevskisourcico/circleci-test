@@ -6,7 +6,12 @@ orbs:
   continuation: circleci/continuation@0.4.0
 
 jobs:
+
   setup:
+    description: |
+      This setup job is used to dynamicaly generate parameters passed to config_main.yml
+      All types of actions should exist as parameters and env_vars of the same name
+      These actions are extracted from git commit message and scheduled pipelines
 
     parameters:
       deploy_workflow:
