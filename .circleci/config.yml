@@ -31,11 +31,13 @@ jobs:
             case $DEPLOY_TYPE in
               true)
                 echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
+                echo "Will execute terraform_deploy_true workflow"
                 ;;
               service)
                 TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
                 echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                 echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
+                echo "Will execute terraform_deploy_service workflow with target ${TERRAFORM_DEPLOY_SERVICE_TARGET}"
             esac
       - run: 
           name: Create JSON parameter file
