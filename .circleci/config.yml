@@ -45,12 +45,10 @@ jobs:
             jq -n \
                 --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE} \
                 --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE} \
-                --argjson terraform_deploy_service_target ${TERRAFORM_DEPLOY_SERVICE_TARGET} \
                 '
                 {
                   "terraform_deploy_true": $terraform_deploy_true,
-                  "terraform_deploy_service": $terraform_deploy_service,
-                  "terraform_deploy_service_target": "$terraform_deploy_service_target"
+                  "terraform_deploy_service": $terraform_deploy_service
                 }
                 ' \
             >> .circleci/parameters.json
