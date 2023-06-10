@@ -30,7 +30,7 @@ jobs:
           name: Create JSON parameter file
           command: |
             jq --null-input \
-                -arg deploy_workflow "${<< parameters.deploy_workflow >>}" \
+                --arg deploy_workflow "${<< parameters.deploy_workflow >>}" \
                 '{"deploy_workflow": $deploy_workflow}' \
                 >> .circleci/parameters.json
       - continuation/continue:
