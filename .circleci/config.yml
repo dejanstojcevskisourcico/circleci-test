@@ -50,7 +50,7 @@ jobs:
                 {
                   "terraform_deploy_true": $terraform_deploy_true,
                   "terraform_deploy_service": $terraform_deploy_service,
-                  "terraform_deploy_service_target": $terraform_deploy_service_target
+                  "terraform_deploy_service_target": "$terraform_deploy_service_target"
                 }
                 ' \
             >> .circleci/parameters.json
