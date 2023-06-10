@@ -21,8 +21,12 @@ jobs:
           name: Set env variable DEPLOY_WORKFLOW
           command: |
               echo "export DEPLOY_WORKFLOW=false" >> $BASH_ENV
+      - run: 
+          name: Create JSON parameter file
+          command: |
+            echo "{ deploy_workflow: << parameters.deploy_workflow >> }" >> parameters.json
       - continuation/continue:
-          parameters: '{ "deploy_workflow": ${<< parameters.deploy_workflow >>} }'
+          parameters: parameters.json
           configuration_path: .circleci/config_main.yml
 
 workflows:
