@@ -29,10 +29,7 @@ jobs:
       - run: 
           name: Create JSON parameter file
           command: |
-            jq --null-input \
-                --arg deploy_workflow ${<< parameters.deploy_workflow >>} \
-                '{"deploy_workflow": $deploy_workflow}' \
-                >> .circleci/parameters.json
+            echo "{ \"deploy_workflow\": ${<< parameters.deploy_workflow >>} }" >> .circleci/parameters.json
       - continuation/continue:
           parameters: .circleci/parameters.json
           configuration_path: .circleci/config_main.yml
