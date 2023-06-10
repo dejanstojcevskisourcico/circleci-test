@@ -40,7 +40,8 @@ jobs:
                 echo "Will execute terraform_deploy_service workflow with target ${TERRAFORM_DEPLOY_SERVICE_TARGET}"
                 ;;
               *)
-                echo "No workflow defined for message: \n${COMMIT_MSG}"
+                echo "No workflow defined for message:"
+                echo ${COMMIT_MSG}"
                 ;;
             esac
       - run: 
