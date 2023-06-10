@@ -44,7 +44,7 @@ jobs:
             jq -n \
                 --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE:=false}  \
                 --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE:=false} \
-                --arg terraform_deploy_service_target ${TERRAFORM_DEPLOY_SERVICE_TARGET:=''} \
+                --arg terraform_deploy_service_target ${TERRAFORM_DEPLOY_SERVICE_TARGET:=null} \
                 '
                 {
                   "terraform_deploy_true": $terraform_deploy_true,
