@@ -27,7 +27,7 @@ jobs:
             echo "{ \"deploy_workflow\": ${<< parameters.deploy_workflow >>} }" >> parameters.json
             cat parameters.json
       - continuation/continue:
-          parameters: parameters.json
+          parameters: "{ \"deploy_workflow\": ${<< parameters.deploy_workflow >>} }"
           configuration_path: .circleci/config_main.yml
 
 workflows:
