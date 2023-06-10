@@ -42,8 +42,8 @@ jobs:
           description: This JSON parameter file contains all parameters passed to config_main.yml file
           command: |
             jq -n \
-                --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE:-false} \
-                --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE:-false} \ 
+                --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE:=false} \
+                --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE:=false} \
                 '
                 {
                   "terraform_deploy_true": $terraform_deploy_true,
