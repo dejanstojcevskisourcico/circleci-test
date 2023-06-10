@@ -24,7 +24,7 @@ jobs:
       - run: 
           name: Create JSON parameter file
           command: |
-            echo "{ deploy_workflow: ${<< parameters.deploy_workflow >>} }" >> parameters.json
+            echo "{ \"deploy_workflow\": ${<< parameters.deploy_workflow >>} }" >> parameters.json
             cat parameters.json
       - continuation/continue:
           parameters: parameters.json
