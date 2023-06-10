@@ -77,7 +77,7 @@ jobs:
           helm_ssm_version: 3.3.0
 
 workflows:
-  deploy_workflow:
+  terraform_deploy_true:
     when: << pipeline.parameters.terraform_deploy_true >>
     jobs:
       - deploy:
