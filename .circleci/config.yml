@@ -27,6 +27,7 @@ jobs:
             DEPLOY=$(echo $COMMIT_MSG | grep -Po '(?<=deploy=).*') || :
             DEPLOY_TYPE=$(echo $DEPLOY | awk 'BEGIN {FS = ":"} {print $1}')
             DEPLOY_PARAMS=$(echo $DEPLOY | awk 'BEGIN {FS = ":"} {print $2}')
+            echo ${DEPLOY_PARAMS}
 
             case $DEPLOY_TYPE in
               true)
