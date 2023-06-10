@@ -41,7 +41,7 @@ jobs:
                 ;;
               *)
                 echo "No workflow defined for message:"
-                echo ${COMMIT_MSG}"
+                echo ${COMMIT_MSG}
                 ;;
             esac
       - run: 
