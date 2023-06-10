@@ -9,7 +9,7 @@ jobs:
 
   setup:
     description: |
-      This setup job is used to dynamicaly generate parameters passed to config_main.yml
+      This setup job is used to dynamicaly generate pipeline parameters passed to config_main.yml
       All types of actions should exist as parameters and env_vars of the same name
       These actions are extracted from git commit message and scheduled pipelines
 
@@ -29,7 +29,10 @@ jobs:
       - run: 
           name: Create JSON parameter file
           command: |
-            echo "{ \"deploy_workflow\": ${<< parameters.deploy_workflow >>} }" >> .circleci/parameters.json
+            jq --null-input \
+                -arg deploy_workflow "${<< parameters.deploy_workflow >>}" \
+                '{"deploy_workflow": $deploy_workflow}' \
+                >> .circleci/parameters.json
       - continuation/continue:
           parameters: .circleci/parameters.json
           configuration_path: .circleci/config_main.yml
