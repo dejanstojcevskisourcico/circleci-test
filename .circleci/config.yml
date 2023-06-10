@@ -28,7 +28,7 @@ jobs:
             This step is extracting strings from git commit message / pipeline scheduler 
             and populating env variables which in turn populate job parameters of type env_var_name
           command: |
-              echo "export DEPLOY_WORKFLOW=true" >> $BASH_ENV
+              echo "export DEPLOY_WORKFLOW=false" >> $BASH_ENV
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
