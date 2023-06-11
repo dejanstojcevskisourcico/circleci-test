@@ -27,7 +27,7 @@ jobs:
 
             case $ACTION_TYPE in
               deploy)
-                DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):/ && print "$2"')
+                DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?)(:|$)/ && print "$2"')
                 DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"')
                 case $DEPLOY_TYPE in
                   true)
@@ -59,7 +59,7 @@ jobs:
                 echo ${COMMIT_MSG}
                 ;;
             esac
-            
+
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
