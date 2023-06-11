@@ -39,8 +39,7 @@ jobs:
                       TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
                       echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                       echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
-                      source $BASH_ENV
-                      echo "Will execute terraform_deploy_service workflow with target ${TERRAFORM_DEPLOY_SERVICE_TARGET} on branch << pipeline.git.branch >>"
+                      echo "Will execute terraform_deploy_service workflow with target on branch << pipeline.git.branch >>"
                     else
                       echo "No deploy workflow service defined for message:"
                       echo ${COMMIT_MSG}
@@ -59,7 +58,7 @@ jobs:
                 echo ${COMMIT_MSG}
                 ;;
             esac
-            
+
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
