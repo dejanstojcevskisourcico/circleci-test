@@ -35,15 +35,22 @@ jobs:
                     echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
                     ;;
                   service)
-                    TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
-                    echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
-                    echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
-                    source $BASH_ENV
-                    perl -le 'print "Will execute terraform_deploy_service workflow with target $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET} on branch << pipeline.git.branch >>" if ($ENV{TERRAFORM_DEPLOY_SERVICE} and $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET})'
+                    if [[! -z "${DEPLOY_PARAMS}" ]]; then
+                      TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
+                      echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
+                      echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
+                      source $BASH_ENV
+                      echo "Will execute terraform_deploy_service workflow with target ${TERRAFORM_DEPLOY_SERVICE_TARGET} on branch << pipeline.git.branch >>"
+                    else
+                      echo "No deploy workflow service defined for message:"
+                      echo ${COMMIT_MSG}
+                      echo 'Target parameter must not be empty'
+                    fi
                     ;;
                   *)
                     echo "No deploy workflow defined for message:"
                     echo ${COMMIT_MSG}
+                    echo "Valid deploy types are: true, service"
                     ;;
                 esac
                 ;;
