@@ -37,6 +37,7 @@ jobs:
                 TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
                 echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                 echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
+                source $BASH_ENV
                 perl -le 'print "Will execute terraform_deploy_service workflow with target $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET}" if ($ENV{TERRAFORM_DEPLOY_SERVICE} and $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET})'
                 ;;
               *)
