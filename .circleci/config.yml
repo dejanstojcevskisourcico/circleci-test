@@ -78,6 +78,7 @@ jobs:
             >> .circleci/parameters.json
             echo "Parameters passed to config_main.yml:"
             cat .circleci/parameters.json
+            
       - continuation/continue:
           parameters: .circleci/parameters.json
           configuration_path: .circleci/config_main.yml
