@@ -27,8 +27,10 @@ jobs:
 
             case $ACTION_TYPE in
               deploy)
-                # DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):/ && print "$2"')
-                # DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"'
+                DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):/ && print "$2"')
+                DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"'
+                echo $DEPLOY_TYPE
+                echo $DEPLOY_PARAMS
                 # case $DEPLOY_TYPE in
                 #   true)
                 #     echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
@@ -47,7 +49,6 @@ jobs:
                 #     ;;
                 # esac
                 # ;;
-                echo 'dejan'
             esac
 
       - run: 
