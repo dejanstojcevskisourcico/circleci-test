@@ -22,29 +22,37 @@ jobs:
             This step is extracting strings from git commit message / scheduled pipeline parameters
             and populating env variables which in turn are used as input pipeline parameters to config_main.yml
           command: |
-            COMMIT_MSG=$(git log -n 1 $CIRCLE_SHA1)
+            COMMIT_MSG=$(git log --format=%B -n 1 $CIRCLE_SHA1)
+            ACTION_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=/ && print "$1"')
 
-            DEPLOY=$(echo $COMMIT_MSG | grep -Po '(?<=deploy=).*') || :
-            DEPLOY_TYPE=$(echo $DEPLOY | awk 'BEGIN {FS = ":"} {print $1}')
-            DEPLOY_PARAMS=$(echo $DEPLOY | awk 'BEGIN {FS = ":"} {print $2}')
-
-            case $DEPLOY_TYPE in
-              true)
-                echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
-                echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
-                ;;
-              service)
-                TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
-                echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
-                echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
-                source $BASH_ENV
-                perl -le 'print "Will execute terraform_deploy_service workflow with target $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET} on branch << pipeline.git.branch >>" if ($ENV{TERRAFORM_DEPLOY_SERVICE} and $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET})'
+            case $ACTION_TYPE in
+              deploy)
+                DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):/ && print "$2"')
+                DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"'
+                case $DEPLOY_TYPE in
+                  true)
+                    echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
+                    echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
+                    ;;
+                  service)
+                    TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
+                    echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
+                    echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
+                    source $BASH_ENV
+                    perl -le 'print "Will execute terraform_deploy_service workflow with target $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET} on branch << pipeline.git.branch >>" if ($ENV{TERRAFORM_DEPLOY_SERVICE} and $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET})'
+                    ;;
+                  *)
+                    echo "No deploy workflow defined for message:"
+                    echo ${COMMIT_MSG}
+                    ;;
+                esac
                 ;;
               *)
                 echo "No workflow defined for message:"
                 echo ${COMMIT_MSG}
                 ;;
             esac
+
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
