@@ -17,7 +17,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Set env variables 
+          name: Filter workflows based on git commit message
           description: |
             This step is extracting strings from git commit message / scheduled pipeline parameters
             and populating env variables which in turn are used as input pipeline parameters to config_main.yml
@@ -37,7 +37,7 @@ jobs:
                 TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
                 echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                 echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
-                echo "Will execute terraform_deploy_service workflow with target ${TARGET_MODULE}"
+                perl -le 'print "Will execute terraform_deploy_service workflow with target $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET}" if ($ENV{TERRAFORM_DEPLOY_SERVICE} and $ENV{TERRAFORM_DEPLOY_SERVICE_TARGET})'
                 ;;
               *)
                 echo "No workflow defined for message:"
