@@ -35,7 +35,7 @@ jobs:
                     echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
                     ;;
                   service)
-                    if [[! -z "${DEPLOY_PARAMS}" ]]; then
+                    if [[ ! -z "$DEPLOY_PARAMS" ]]; then
                       TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
                       echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                       echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
