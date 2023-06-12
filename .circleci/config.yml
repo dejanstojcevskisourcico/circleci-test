@@ -28,9 +28,9 @@ jobs:
 
             case $ACTION_TYPE in
               deploy)
-                #read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
-                DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?)(:|$)/ && print "$2"')
-                DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"')
+                read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
+                #DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?)(:|$)/ && print "$2"')
+                #DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"')
                 case $DEPLOY_TYPE in
                   true)
                     echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
