@@ -16,6 +16,7 @@ jobs:
 
     steps:
       - checkout
+
       - run:
           name: Filter workflows based on git commit message
           description: |
@@ -27,8 +28,11 @@ jobs:
 
             case $ACTION_TYPE in
               deploy)
-                DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?)(:|$)/ && print "$2"')
-                DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"')
+                read -r DEPLOY_TYPE DEPLOY_PARAMS < <(perl -ne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"'))
+                echo "DEPLOY_TYPE: ${DEPLOY_TYPE}"
+                echo "DEPLOY_PARAMS: ${DEPLOY_PARAMS}"
+                #DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?)(:|$)/ && print "$2"')
+                #DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"')
                 case $DEPLOY_TYPE in
                   true)
                     echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
