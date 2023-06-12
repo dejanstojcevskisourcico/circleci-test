@@ -32,18 +32,18 @@ jobs:
                   It will NOT be triggered by scheduled pipelines from circleci app.
                 command: |
                   COMMIT_MSG=$(git log --format=%B -n 1 $CIRCLE_SHA1)
-                  ACTION_TYPE=$(echo $COMMIT_MSG | perl -ne '/^([a-zA-Z]+?)=/ && print "$1"')
+                  ACTION_TYPE=$(echo $COMMIT_MSG | perl -ne '/^([a-z]+?)=/; print (defined($1) ? $1 : " ")')
 
                   case $ACTION_TYPE in
                     deploy)
-                      read -r DEPLOY_TYPE < <(echo $COMMIT_MSG | perl -lne '/^deploy=([a-zA-Z]+?)(:|$)/ && print "$1"')
+                      read -r DEPLOY_TYPE < <(echo $COMMIT_MSG | perl -lne '/^deploy=([a-z]+?)(:|$)/; print (defined($1) ? $1 : " ")')
                       case $DEPLOY_TYPE in
                         true)
                           echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
                           echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
                           ;;
                         service)
-                          read -r DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^deploy=service:(.*)$/ ; $result = $1; ($result =~ /\s/) ? print " " : print "$result"')
+                          read -r DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^deploy=service:(.*)$/; print (defined($1) ? $1 : " ")')
                           if [[ ! -z "$DEPLOY_PARAMS" ]]; then
                             echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                             echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=module.${DEPLOY_PARAMS}" >> $BASH_ENV
