@@ -32,11 +32,11 @@ jobs:
                   It will NOT be triggered by scheduled pipelines from circleci app.
                 command: |
                   COMMIT_MSG=$(git log --format=%B -n 1 $CIRCLE_SHA1)
-                  ACTION_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=/ && print "$1"')
+                  ACTION_TYPE=$(echo $COMMIT_MSG | perl -ne '/^([a-zA-Z]+?)=/ && print "$1"')
 
                   case $ACTION_TYPE in
                     deploy)
-                      read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
+                      read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^([a-zA-Z]+?)=([a-zA-Z]+?):(\S*)$/ && print "$2"," ","$3"')
                       case $DEPLOY_TYPE in
                         true)
                           echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
