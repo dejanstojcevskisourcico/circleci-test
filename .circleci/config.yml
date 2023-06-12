@@ -43,7 +43,7 @@ jobs:
                           echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
                           ;;
                         service)
-                          read -r DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^deploy=service:(.*)$/; print (defined($1) ? ( @(split(/\s+/,$1)) > 1 ? " " : $1 ) : " ")')
+                          read -r DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^deploy=service:(.*)$/; print (defined($1) ? ( $(split(/\s+/,$1)) > 1 ? " " : $1 ) : " ")')
                           if [[ ! -z "$DEPLOY_PARAMS" ]]; then
                             echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                             echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=module.${DEPLOY_PARAMS}" >> $BASH_ENV
