@@ -29,8 +29,6 @@ jobs:
             case $ACTION_TYPE in
               deploy)
                 read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
-                #DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?)(:|$)/ && print "$2"')
-                #DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"')
                 case $DEPLOY_TYPE in
                   true)
                     echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
@@ -38,9 +36,8 @@ jobs:
                     ;;
                   service)
                     if [[ ! -z "$DEPLOY_PARAMS" ]]; then
-                      TARGET_MODULE=module.$(echo $DEPLOY_PARAMS | sed 's/\./\.module\./g')
                       echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
-                      echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=${TARGET_MODULE}" >> $BASH_ENV
+                      echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=module.${DEPLOY_PARAMS}" >> $BASH_ENV
                       echo "Will execute terraform_deploy_service workflow with target on branch << pipeline.git.branch >>"
                     else
                       echo "No deploy workflow service defined for message:"
