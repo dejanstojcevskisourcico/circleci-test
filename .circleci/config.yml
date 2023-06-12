@@ -28,11 +28,7 @@ jobs:
 
             case $ACTION_TYPE in
               deploy)
-                read -r DEPLOY_TYPE DEPLOY_PARAMS < $(perl -ne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
-                echo "DEPLOY_TYPE: ${DEPLOY_TYPE}"
-                echo "DEPLOY_PARAMS: ${DEPLOY_PARAMS}"
-                #DEPLOY_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?)(:|$)/ && print "$2"')
-                #DEPLOY_PARAMS=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.+?)$/ && print "$3"')
+                read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -ne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
                 case $DEPLOY_TYPE in
                   true)
                     echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
@@ -60,7 +56,7 @@ jobs:
               *)
                 echo "No workflow defined for message:"
                 echo ${COMMIT_MSG}
-                echo "Valid actions are: deploy"
+                echo "Valid action types are: deploy"
                 ;;
             esac
 
