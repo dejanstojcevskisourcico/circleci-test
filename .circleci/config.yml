@@ -43,7 +43,7 @@ jobs:
                           echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
                           ;;
                         service)
-                          read -r DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^deploy=service:(.*)$/; print (defined($1) ? ( scalar split(/\W+/,$1) > 1  ? " " : $1 ) : " ")')
+                          read -r DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^deploy=service:([a-zA-Z_][a-zA-Z0-9_\-\.]*)$/; print (defined($1) ? $1 : " ")')
                           if [[ ! -z "$DEPLOY_PARAMS" ]]; then
                             echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                             echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=module.${DEPLOY_PARAMS}" >> $BASH_ENV
@@ -51,7 +51,7 @@ jobs:
                           else
                             echo "No deploy workflow service defined for message:"
                             echo ${COMMIT_MSG}
-                            echo 'Target parameter must not be empty or contain spaces'
+                            echo 'Target parameter must not be empty and must conform to terraform identifier syntax'
                           fi
                           ;;
                         *)
