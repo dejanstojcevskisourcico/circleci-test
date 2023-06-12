@@ -67,7 +67,6 @@ jobs:
                       echo "Valid action types are: deploy="
                       ;;
                   esac
-
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
