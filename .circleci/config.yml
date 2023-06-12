@@ -17,50 +17,56 @@ jobs:
     steps:
       - checkout
 
-      - run:
-          name: Filter workflows based on git commit message
-          description: |
-            This step is extracting strings from git commit message
-            and populating env variables which in turn are used as input pipeline parameters to config_main.yml
-            This step is triggered by webhooks only - when pushing new commit to github repo.
-            It will NOT be triggered by scheduled pipelines from circleci app.
-          command: |
-            COMMIT_MSG=$(git log --format=%B -n 1 $CIRCLE_SHA1)
-            ACTION_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=/ && print "$1"')
+      - when:
+          condition:
+            or:
+              - equal: [ webhook, << pipeline.trigger_source >> ]
+              - equal: [ api, << pipeline.trigger_source >> ]
+          steps:
+            - run:
+                name: Filter workflows based on git commit message
+                description: |
+                  This step is extracting strings from git commit message
+                  and populating env variables which in turn are used as input pipeline parameters to config_main.yml
+                  This step is triggered by webhooks or api only - when pushing new commit to github repo or directly triggering from circleci api call.
+                  It will NOT be triggered by scheduled pipelines from circleci app.
+                command: |
+                  COMMIT_MSG=$(git log --format=%B -n 1 $CIRCLE_SHA1)
+                  ACTION_TYPE=$(echo $COMMIT_MSG | perl -ne '/^(.+?)=/ && print "$1"')
 
-            case $ACTION_TYPE in
-              deploy)
-                read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
-                case $DEPLOY_TYPE in
-                  true)
-                    echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
-                    echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
-                    ;;
-                  service)
-                    if [[ ! -z "$DEPLOY_PARAMS" ]]; then
-                      echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
-                      echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=module.${DEPLOY_PARAMS}" >> $BASH_ENV
-                      echo "Will execute terraform_deploy_service workflow with target on branch << pipeline.git.branch >>"
-                    else
-                      echo "No deploy workflow service defined for message:"
+                  case $ACTION_TYPE in
+                    deploy)
+                      read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^(.+?)=(.+?):(.*)$/ && print "$2"," ","$3"')
+                      case $DEPLOY_TYPE in
+                        true)
+                          echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
+                          echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
+                          ;;
+                        service)
+                          if [[ ! -z "$DEPLOY_PARAMS" ]]; then
+                            echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
+                            echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=module.${DEPLOY_PARAMS}" >> $BASH_ENV
+                            echo "Will execute terraform_deploy_service workflow with target on branch << pipeline.git.branch >>"
+                          else
+                            echo "No deploy workflow service defined for message:"
+                            echo ${COMMIT_MSG}
+                            echo 'Target parameter must not be empty'
+                          fi
+                          ;;
+                        *)
+                          echo "No deploy workflow defined for message:"
+                          echo ${COMMIT_MSG}
+                          echo "Valid deploy types are: true, service"
+                          ;;
+                      esac
+                      ;;
+                    *)
+                      echo "No workflow defined for message:"
                       echo ${COMMIT_MSG}
-                      echo 'Target parameter must not be empty'
-                    fi
-                    ;;
-                  *)
-                    echo "No deploy workflow defined for message:"
-                    echo ${COMMIT_MSG}
-                    echo "Valid deploy types are: true, service"
-                    ;;
-                esac
-                ;;
-              *)
-                echo "No workflow defined for message:"
-                echo ${COMMIT_MSG}
-                echo "Valid action types are: deploy="
-                ;;
-            esac
-            
+                      echo "Valid action types are: deploy="
+                      ;;
+                  esac
+                  
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
