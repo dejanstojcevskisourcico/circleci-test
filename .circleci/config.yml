@@ -51,7 +51,7 @@ jobs:
                           else
                             echo "No deploy workflow service defined for message:"
                             echo ${COMMIT_MSG}
-                            echo 'Target parameter must not be empty and must conform to terraform identifier syntax'
+                            echo 'Target parameter must not be empty and must conform to terraform identifier syntax rules'
                           fi
                           ;;
                         *)
