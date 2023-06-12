@@ -36,13 +36,14 @@ jobs:
 
                   case $ACTION_TYPE in
                     deploy)
-                      read -r DEPLOY_TYPE DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^([a-zA-Z]+?)=([a-zA-Z]+?):(.*)$/ && print "$2"," ","$3"')
+                      read -r DEPLOY_TYPE < <(echo $COMMIT_MSG | perl -lne '/^deploy=([a-zA-Z]+?)(:|$)/ && print "$1"')
                       case $DEPLOY_TYPE in
                         true)
                           echo "export TERRAFORM_DEPLOY_TRUE=true" >> $BASH_ENV
                           echo "Will execute terraform_deploy_true workflow on branch << pipeline.git.branch >>"
                           ;;
                         service)
+                          read -r DEPLOY_PARAMS < <(echo $COMMIT_MSG | perl -lne '/^deploy=service:(.*)$/ && print "$1"')
                           if [[ ! -z "$DEPLOY_PARAMS" ]]; then
                             echo "export TERRAFORM_DEPLOY_SERVICE=true" >> $BASH_ENV
                             echo "export TERRAFORM_DEPLOY_SERVICE_TARGET=module.${DEPLOY_PARAMS}" >> $BASH_ENV
