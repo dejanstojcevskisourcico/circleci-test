@@ -78,11 +78,25 @@ jobs:
       - setup-helm-client:
           helm_s3_version: 0.14.0
           helm_ssm_version: 3.3.0
+  
+  scheduled:
+    executor: deploy-executor
+    steps:
+      - run:
+          command: echo "This is scheduled workflow"
 
 workflows:
   terraform_deploy_true:
     when: << pipeline.parameters.terraform_deploy_true >>
     jobs:
       - deploy:
+          context:
+            - circleci-test
+
+  scheduled_workflow:
+    when:
+      equal: [ test_trigger, << pipeline.parameters.schedule_name >> ]
+    jobs:
+      - scheduled:
           context:
             - circleci-test
