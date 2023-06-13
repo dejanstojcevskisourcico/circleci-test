@@ -86,14 +86,14 @@ jobs:
           command: echo "This is scheduled workflow"
 
 workflows:
-  terraform_deploy_true:
+  terraform-deploy-true:
     when: << pipeline.parameters.terraform_deploy_true >>
     jobs:
       - deploy:
           context:
             - circleci-test
 
-  scheduled_workflow:
+  scheduled-test-trigger:
     when:
       equal: [ test_trigger, << pipeline.parameters.schedule_name >> ]
     jobs:
