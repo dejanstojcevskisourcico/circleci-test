@@ -57,7 +57,7 @@ jobs:
                         *)
                           echo "No deploy workflow defined for message:"
                           echo ${COMMIT_MSG}
-                          echo "Valid deploy types are: true, service"
+                          echo "Valid deploy types are: deploy=true, deploy=service:target"
                           ;;
                       esac
                       ;;
@@ -81,7 +81,7 @@ jobs:
                 command: |
                   SCHEDULE_NAME=<< pipeline.schedule.name >>
                   echo "Will execute schedule << pipeline.schedule.name >> on branch << pipeline.git.branch >>"
-                  
+
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
