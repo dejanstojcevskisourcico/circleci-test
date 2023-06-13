@@ -79,7 +79,7 @@ jobs:
                   It is used to filter workflows in config_main.yml.
                   This step will be triggered ONLY by scheduled pipeline setting in circleci app.
                 command: |
-                  SCHEDULE_NAME=<< pipeline.schedule.name >>
+                  echo "export SCHEDULE_NAME=<< pipeline.schedule.name >>" >> $BASH_ENV
                   echo "Will execute schedule << pipeline.schedule.name >> on branch << pipeline.git.branch >>"
 
       - run: 
