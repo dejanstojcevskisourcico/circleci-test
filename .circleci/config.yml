@@ -67,6 +67,21 @@ jobs:
                       echo "Valid action types are: deploy="
                       ;;
                   esac
+
+      - when:
+          condition:
+            equal: [ scheduled_pipeline, << pipeline.trigger_source >> ]
+          steps:
+            - run:
+                name: Filter workflows based on scheduled pipeline name
+                description: |
+                  This step is fetching schedule name and populate env variable with it.
+                  It is used to filter workflows in config_main.yml.
+                  This step will be triggered ONLY by scheduled pipeline setting in circleci app.
+                command: |
+                  SCHEDULE_NAME=<< pipeline.schedule.name >>
+                  echo "Will execute schedule << pipeline.schedule.name >> on branch << pipeline.git.branch >>"
+                  
       - run: 
           name: Create JSON parameter file
           description: This JSON parameter file contains all parameters passed to config_main.yml file
@@ -75,11 +90,13 @@ jobs:
                 --argjson terraform_deploy_true ${TERRAFORM_DEPLOY_TRUE:=false}  \
                 --argjson terraform_deploy_service ${TERRAFORM_DEPLOY_SERVICE:=false} \
                 --arg terraform_deploy_service_target ${TERRAFORM_DEPLOY_SERVICE_TARGET:=null} \
+                --arg schedule_name ${SCHEDULE_NAME:=null} \
                 '
                 {
                   "terraform_deploy_true": $terraform_deploy_true,
                   "terraform_deploy_service": $terraform_deploy_service,
-                  "terraform_deploy_service_target": $terraform_deploy_service_target
+                  "terraform_deploy_service_target": $terraform_deploy_service_target,
+                  "schedule_name": $schedule_name
                 }
                 ' \
             >> .circleci/parameters.json
