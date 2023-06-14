@@ -83,8 +83,8 @@ jobs:
       - aws-cli/install
       - run:
           command: |
-            sudo apt-get update -y
-            sudo apt-get install -y cl-base64
+            apt-get update -y
+            apt-get install -y cl-base64
       # - setup-kubernetes-client
       # - setup-helm-client:
       #     helm_s3_version: 0.14.0
