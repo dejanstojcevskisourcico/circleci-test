@@ -70,7 +70,7 @@ commands:
             helm repo add vatbox-helm-repo s3://vatbox-helm-repo && echo "Repository vatbox-helm-repo added"
           
 jobs:
-  deploy:
+  terraform-deploy-true-job:
     executor: deploy-executor
     steps:
       - checkout
@@ -86,14 +86,14 @@ jobs:
           command: echo "This is scheduled workflow"
 
 workflows:
-  terraform-deploy-true:
+  terraform-deploy-true-workflow:
     when: << pipeline.parameters.terraform_deploy_true >>
     jobs:
-      - deploy:
+      - terraform-deploy-true-job:
           context:
             - circleci-test
 
-  scheduled-test-trigger:
+  scheduled-test-trigger-workflow:
     when:
       equal: [ test_trigger, << pipeline.parameters.schedule_name >> ]
     jobs:
