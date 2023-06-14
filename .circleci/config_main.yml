@@ -18,6 +18,12 @@ executors:
   deploy-executor:
     docker:
       - image: cimg/aws:2023.05
+  terraform-executor:
+    docker:
+      - image: hashicorp/terraform:1.5
+
+orbs:
+  aws-cli: circleci/aws-cli@4.0.0
      
 commands:
 
@@ -71,13 +77,18 @@ commands:
           
 jobs:
   deploy:
-    executor: deploy-executor
+    executor: terraform-executor
     steps:
       - checkout
-      - setup-kubernetes-client
-      - setup-helm-client:
-          helm_s3_version: 0.14.0
-          helm_ssm_version: 3.3.0
+      - aws-cli/install
+      - run:
+          command: |
+            sudo apt-get update -y
+            sudo apt-get install -y cl-base64
+      # - setup-kubernetes-client
+      # - setup-helm-client:
+      #     helm_s3_version: 0.14.0
+      #     helm_ssm_version: 3.3.0
   
   scheduled:
     executor: deploy-executor
