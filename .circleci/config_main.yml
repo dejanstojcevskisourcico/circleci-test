@@ -24,7 +24,6 @@ executors:
 
 orbs:
   terraform: circleci/terraform@3.2.1
-  aws-cli: circleci/aws-cli@4.0.0
      
 commands:
 
@@ -78,10 +77,9 @@ commands:
           
 jobs:
   deploy:
-    executor: terraform-executor
+    executor: deploy-executor
     steps:
       - checkout
-      - aws-cli/install
       # - setup-kubernetes-client
       # - setup-helm-client:
       #     helm_s3_version: 0.14.0
