@@ -18,6 +18,9 @@ executors:
   deploy-executor:
     docker:
       - image: cimg/aws:2023.05
+  terraform-executor:
+    docker:
+      - image: hashicorp/terraform:1.5
 
 orbs:
   terraform: circleci/terraform@3.2.1
@@ -75,7 +78,7 @@ commands:
           
 jobs:
   deploy:
-    executor: terraform/default
+    executor: terraform-executor
     steps:
       - checkout
       - aws-cli/install
