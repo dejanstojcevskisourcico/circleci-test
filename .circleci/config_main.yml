@@ -18,6 +18,9 @@ executors:
   deploy-executor:
     docker:
       - image: cimg/aws:2023.05
+
+orbs:
+  terraform: circleci/terraform@3.2.1
      
 commands:
 
@@ -71,13 +74,13 @@ commands:
           
 jobs:
   deploy:
-    executor: deploy-executor
+    executor: terraform/default
     steps:
       - checkout
       - setup-kubernetes-client
-      - setup-helm-client:
-          helm_s3_version: 0.14.0
-          helm_ssm_version: 3.3.0
+      # - setup-helm-client:
+      #     helm_s3_version: 0.14.0
+      #     helm_ssm_version: 3.3.0
   
   scheduled:
     executor: deploy-executor
